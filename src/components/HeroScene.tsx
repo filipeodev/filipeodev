@@ -5,17 +5,8 @@ import * as THREE from "three";
 
 type Pulse = { from: number; to: number; t: number; speed: number };
 
-export default function HeroScene({ paused }: { paused: boolean }) {
+export default function HeroScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pausedRef = useRef(paused);
-  const startRef = useRef<() => void>(undefined);
-
-  // pausa e retoma sem recriar a cena
-  useEffect(() => {
-    pausedRef.current = paused;
-    if (!paused) startRef.current?.();
-  }, [paused]);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -158,7 +149,7 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       pulseMesh.instanceMatrix.needsUpdate = true;
 
       renderer.render(scene, camera);
-      running = visible && !pausedRef.current;
+      running = visible;
       if (running) raf = requestAnimationFrame(frame);
     };
 
@@ -167,13 +158,10 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       clock.getDelta();
       raf = requestAnimationFrame(frame);
     };
-    startRef.current = () => {
-      if (visible) start();
-    };
 
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && !pausedRef.current) start();
+      if (visible) start();
       else cancelAnimationFrame(raf);
     });
     io.observe(canvas);
@@ -187,7 +175,6 @@ export default function HeroScene({ paused }: { paused: boolean }) {
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
-      startRef.current = undefined;
       ro.disconnect();
       window.removeEventListener("pointermove", onMove);
       [geo, lineGeo, nodeGeo, pulseGeo, innerGeo, innerWire, lineMat, nodeMat, pulseMat, innerMat].forEach((d) =>
