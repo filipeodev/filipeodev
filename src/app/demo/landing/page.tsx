@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Demo de landing page | Filipe" };
 
 export default function Page() {
   return (
-    <DemoShell title="Landing page" intro="Uma página com uma oferta, uma prova e um único formulário. Teste a validação deixando os campos vazios.">
+    <DemoShell title="Landing page" intro="Uma página completa de captação: oferta, prova, resultado e um formulário. Role a página e teste a validação deixando os campos vazios.">
       <LandingDemo />
     </DemoShell>
   );
