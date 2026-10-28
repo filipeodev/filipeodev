@@ -4,7 +4,7 @@ import { MobileMenu } from "./MobileMenu";
 const links = [
   { href: "#servicos", label: "Serviços" },
   { href: "#projetos", label: "Projetos" },
-  { href: "#stack", label: "Tecnologias" },
+  { href: "#stack", label: "Bastidores" },
   { href: "#faq", label: "Dúvidas" },
 ];
 
@@ -16,7 +16,7 @@ export function Header() {
         className="relative flex items-center gap-3 rounded-2xl border border-line bg-canvas/70 p-2 pl-4 backdrop-blur-md"
       >
         <a href="#inicio" className="font-mono text-sm font-semibold text-fg focus-visible:outline-2 focus-visible:outline-accent">
-          filipe<span className="text-accent">.dev</span>
+          filipe<span className="text-accent">.odev</span>
         </a>
         <ul className="hidden items-center gap-1 md:flex">
           {links.map((l) => (

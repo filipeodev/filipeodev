@@ -14,14 +14,14 @@ const geistMono = Geist_Mono({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://filipeodev.com";
 const description =
-  "Filipe, desenvolvedor full stack. Landing pages, CRMs, automação de WhatsApp e sistemas de agendamento sob medida.";
+  "Sistemas sob medida para agendar, atender e vender mais: agendamento online, automação no WhatsApp, CRMs e landing pages.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Filipe | Landing pages, CRMs, WhatsApp e agendamentos",
+  title: "filipe.odev | Agendamento, WhatsApp, CRM e landing pages",
   description,
   openGraph: {
-    title: "Filipe | Desenvolvedor full stack",
+    title: "filipe.odev | Sistemas sob medida",
     description,
     type: "website",
     locale: "pt_BR",

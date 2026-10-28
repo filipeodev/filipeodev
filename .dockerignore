@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.env
+.env.*
+!.env.example
+Dockerfile
+.dockerignore
+README.md
+AGENTS.md
+SKILLS-CATALOGO.md
+SKILLS-ROTACAO.md
+npm-debug.log*
