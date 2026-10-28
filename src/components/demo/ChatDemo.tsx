@@ -38,6 +38,15 @@ export function ChatDemo() {
     }, 700);
   };
 
+  // desfaz a última escolha, inclusive se a resposta do bot ainda está "digitando"
+  const back = () => {
+    clearTimeout(timer.current);
+    const keepSteps = typing ? step : step - 1;
+    setMsgs((m) => m.slice(0, 1 + 2 * keepSteps));
+    setStep(keepSteps);
+    setTyping(false);
+  };
+
   const reset = () => {
     clearTimeout(timer.current);
     setStep(0);
@@ -68,6 +77,15 @@ export function ChatDemo() {
         <div ref={end} />
       </div>
       <div className="flex flex-wrap gap-2 border-t border-line bg-surface p-3">
+        {(step > 0 || typing) && (
+          <button
+            type="button"
+            onClick={back}
+            className="min-h-11 rounded-xl border border-line px-4 py-2 text-base text-muted transition-colors duration-300 hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            ← Voltar
+          </button>
+        )}
         {finished ? (
           <button type="button" onClick={reset} className="min-h-11 rounded-xl border border-line bg-raised px-4 py-2 text-base focus-visible:outline-2 focus-visible:outline-accent">
             Reiniciar conversa
