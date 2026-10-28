@@ -9,12 +9,21 @@ export type Service = {
 
 export const services: Service[] = [
   {
-    id: "landing",
-    title: "Landing pages",
-    problem: "Seu anúncio traz visitas, mas poucas viram contato.",
-    solution: "Uma página rápida, com uma oferta clara e um único botão de ação.",
-    result: "Mais pedidos de orçamento vindos do mesmo tráfego.",
-    message: "Olá Filipe! Quero uma landing page para o meu negócio.",
+    id: "agendamento",
+    title: "Sistemas de agendamento",
+    problem: "Marcar horário por mensagem gera faltas e confusão.",
+    solution: "Agenda online com confirmação e lembrete automático ao cliente.",
+    result: "Menos faltas e a agenda sempre organizada.",
+    message: "Olá Filipe! Quero um sistema de agendamento online.",
+  },
+  {
+    id: "whatsapp",
+    title: "Automação com WhatsApp",
+    problem: "Você responde as mesmas perguntas o dia todo.",
+    solution:
+      "Fluxos que respondem, qualificam o contato e avisam a equipe. Também crio sistemas integrados com automações no WhatsApp, como agenda, CRM e cobrança conversando com o cliente.",
+    result: "Atendimento rápido, mesmo fora do horário comercial.",
+    message: "Olá Filipe! Quero um sistema integrado com automação no WhatsApp.",
   },
   {
     id: "crm",
@@ -25,19 +34,11 @@ export const services: Service[] = [
     message: "Olá Filipe! Quero um CRM para organizar minhas vendas.",
   },
   {
-    id: "whatsapp",
-    title: "Automação com WhatsApp",
-    problem: "Você responde as mesmas perguntas o dia todo.",
-    solution: "Fluxos que respondem, qualificam o contato e avisam a equipe.",
-    result: "Atendimento rápido, mesmo fora do horário comercial.",
-    message: "Olá Filipe! Quero automatizar o atendimento no WhatsApp.",
-  },
-  {
-    id: "agendamento",
-    title: "Sistemas de agendamento",
-    problem: "Marcar horário por mensagem gera faltas e confusão.",
-    solution: "Agenda online com confirmação e lembrete automático ao cliente.",
-    result: "Menos faltas e a agenda sempre organizada.",
-    message: "Olá Filipe! Quero um sistema de agendamento online.",
+    id: "landing",
+    title: "Landing pages",
+    problem: "Seu anúncio traz visitas, mas poucas viram contato.",
+    solution: "Uma página rápida, com uma oferta clara e um único botão de ação.",
+    result: "Mais pedidos de orçamento vindos do mesmo tráfego.",
+    message: "Olá Filipe! Quero uma landing page para o meu negócio.",
   },
 ];

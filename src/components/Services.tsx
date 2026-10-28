@@ -28,7 +28,7 @@ export function Services() {
                 <article className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
                   <Icon size={32} weight="duotone" className="text-accent" aria-hidden />
                   <h3 className="mt-4 text-2xl font-semibold">{s.title}</h3>
-                  <dl className="mt-4 space-y-3 text-base">
+                  <dl className="mt-4 space-y-3 text-base text-fg">
                     <div>
                       <dt className="font-mono text-xs tracking-wider text-muted uppercase">O problema</dt>
                       <dd className="mt-1">{s.problem}</dd>
