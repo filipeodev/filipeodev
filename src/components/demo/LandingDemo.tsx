@@ -34,7 +34,7 @@ const vars = {
   "--c-card": "#ffffff",
   "--c-ink": "#2a2321",
   "--c-mute": "#6b5d57",
-  "--c-rose": "#b4536a",
+  "--c-rose": "#a5455b",
   "--c-line": "#e6d7cf",
 } as React.CSSProperties;
 
@@ -49,7 +49,7 @@ export function LandingDemo() {
     <div style={vars} className="overflow-hidden rounded-2xl border border-line bg-[var(--c-bg)] text-[var(--c-ink)]">
       <div className="flex items-center justify-between border-b border-[var(--c-line)] px-6 py-4">
         <span className="text-xl font-semibold">Clínica Aurora</span>
-        <a href="#l-form" className="min-h-11 rounded-xl bg-[var(--c-rose)] px-4 py-2.5 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-rose)]">
+        <a href="#l-form" className="min-h-11 rounded-xl bg-[var(--c-rose)] px-4 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-rose)]">
           Agendar avaliação
         </a>
       </div>
@@ -62,7 +62,7 @@ export function LandingDemo() {
           <p className="mt-4 text-lg text-[var(--c-mute)]">
             Avaliação gratuita com a dermatologista e um plano de tratamento pensado para o seu tipo de pele.
           </p>
-          <a href="#l-form" className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-[var(--c-rose)] px-4 py-2.5 text-base font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-rose)] motion-reduce:transition-none">
+          <a href="#l-form" className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-[var(--c-rose)] px-4 py-2 text-base font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-rose)] motion-reduce:transition-none">
             Quero minha avaliação gratuita
           </a>
         </Reveal>
@@ -91,7 +91,7 @@ export function LandingDemo() {
       </section>
 
       {/* tratamentos */}
-      <section className="px-6 py-14 sm:px-10">
+      <section className="px-6 py-16 sm:px-10">
         <Reveal>
           <h3 className="text-3xl font-semibold tracking-tight">Tratamentos</h3>
           <p className="mt-2 max-w-[680px] text-base text-[var(--c-mute)]">Cada protocolo começa na avaliação, nunca em um pacote pronto.</p>
@@ -106,7 +106,7 @@ export function LandingDemo() {
                       <TreatmentArt kind={t.kind} />
                     </div>
                   </div>
-                  <div className="p-5">
+                  <div className="p-6">
                     <h4 className="text-xl font-semibold">{t.name}</h4>
                     <p className="mt-2 text-base text-[var(--c-mute)]">{t.text}</p>
                     <p className="mt-3 font-mono text-sm text-[var(--c-rose)]">{t.price}</p>
@@ -118,21 +118,8 @@ export function LandingDemo() {
         </ul>
       </section>
 
-      {/* faixa em movimento */}
-      <div className="marquee overflow-hidden border-y border-[var(--c-line)] bg-[var(--c-rose)] py-3 text-white" aria-hidden>
-        <div className="marquee-track flex gap-10 text-lg font-semibold">
-          {[0, 1].map((k) => (
-            <ul key={k} className="flex shrink-0 gap-10">
-              {["Limpeza de pele", "Peeling", "Laser", "Hidratação", "Microagulhamento", "Revitalização"].map((w) => (
-                <li key={w}>{w} ✦</li>
-              ))}
-            </ul>
-          ))}
-        </div>
-      </div>
-
       {/* antes e depois */}
-      <section className="grid items-center gap-8 px-6 py-14 sm:px-10 md:grid-cols-2">
+      <section className="grid items-center gap-8 px-6 py-16 sm:px-10 md:grid-cols-2">
         <Reveal>
           <h3 className="text-3xl font-semibold tracking-tight">Resultado que você acompanha</h3>
           <p className="mt-3 text-base text-[var(--c-mute)]">
@@ -145,7 +132,7 @@ export function LandingDemo() {
       </section>
 
       {/* como funciona */}
-      <section className="bg-white px-6 py-14 sm:px-10">
+      <section className="bg-white px-6 py-16 sm:px-10">
         <Reveal>
           <h3 className="text-3xl font-semibold tracking-tight">Como funciona</h3>
         </Reveal>
@@ -153,7 +140,7 @@ export function LandingDemo() {
           {steps.map((s, i) => (
             <li key={s.n}>
               <Reveal delay={i * 100} className="h-full">
-                <div className="h-full rounded-2xl border border-[var(--c-line)] bg-[var(--c-bg)] p-5">
+                <div className="h-full rounded-2xl border border-[var(--c-line)] bg-[var(--c-bg)] p-6">
                   <span className="flex size-10 items-center justify-center rounded-full bg-[var(--c-rose)] font-semibold text-white">{s.n}</span>
                   <h4 className="mt-4 text-xl font-semibold">{s.t}</h4>
                   <p className="mt-2 text-base text-[var(--c-mute)]">{s.d}</p>
@@ -165,7 +152,7 @@ export function LandingDemo() {
       </section>
 
       {/* depoimentos */}
-      <section className="px-6 py-14 sm:px-10">
+      <section className="px-6 py-16 sm:px-10">
         <Reveal>
           <h3 className="text-3xl font-semibold tracking-tight">Quem já passou por aqui</h3>
         </Reveal>
@@ -173,7 +160,7 @@ export function LandingDemo() {
           {reviews.map((r, i) => (
             <li key={r.name}>
               <Reveal delay={i * 100} className="h-full">
-                <figure className="flex h-full flex-col rounded-2xl border border-[var(--c-line)] bg-white p-5">
+                <figure className="flex h-full flex-col rounded-2xl border border-[var(--c-line)] bg-white p-6">
                   <blockquote className="text-base">“{r.text}”</blockquote>
                   <figcaption className="mt-4 flex items-center gap-3 pt-2">
                     <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-[#f1d9d4] font-semibold text-[var(--c-rose)]">
@@ -192,7 +179,7 @@ export function LandingDemo() {
       </section>
 
       {/* dúvidas */}
-      <section className="bg-white px-6 py-14 sm:px-10">
+      <section className="bg-white px-6 py-16 sm:px-10">
         <Reveal>
           <h3 className="text-3xl font-semibold tracking-tight">Dúvidas frequentes</h3>
         </Reveal>
@@ -210,10 +197,10 @@ export function LandingDemo() {
       </section>
 
       {/* formulário */}
-      <section id="l-form" className="grid gap-8 px-6 py-14 sm:px-10 md:grid-cols-2">
+      <section id="l-form" className="grid gap-8 px-6 py-16 sm:px-10 md:grid-cols-2">
         <Reveal>
           <h3 className="text-4xl font-semibold tracking-tight">Agende sua avaliação gratuita</h3>
-          <ul className="mt-5 space-y-2 text-base text-[var(--c-mute)]">
+          <ul className="mt-4 space-y-2 text-base text-[var(--c-mute)]">
             <li>Resposta em até 1 hora útil</li>
             <li>Parcelamento em até 6 vezes</li>
             <li>Sem compromisso</li>
@@ -237,7 +224,9 @@ export function LandingDemo() {
               if (!name) next.name = "Informe seu nome.";
               if (phone.length < 10) next.phone = "Informe um telefone com DDD.";
               setErrors(next);
-              if (!next.name && !next.phone) setSent(true);
+              if (next.name) document.getElementById("l-name")?.focus();
+              else if (next.phone) document.getElementById("l-phone")?.focus();
+              else setSent(true);
             }}
           >
             <div>

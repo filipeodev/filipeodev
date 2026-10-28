@@ -5,7 +5,7 @@ const bar = "rounded bg-raised";
 export function ProjectMock({ kind }: { kind: Project["mock"] }) {
   return (
     <div aria-hidden className="rounded-xl border border-line bg-canvas p-3">
-      <div className="mb-3 flex gap-1.5">
+      <div className="mb-3 flex gap-2">
         <span className="size-2 rounded-full bg-line" />
         <span className="size-2 rounded-full bg-line" />
         <span className="size-2 rounded-full bg-line" />

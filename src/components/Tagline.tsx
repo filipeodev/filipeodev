@@ -32,7 +32,7 @@ export function Tagline() {
           <span
             key={i}
             data-w
-            className="text-fg/30 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] data-[on=true]:text-fg motion-reduce:transition-none"
+            className="text-fg/50 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] data-[on=true]:text-fg motion-reduce:transition-none"
           >
             {w}{" "}
           </span>

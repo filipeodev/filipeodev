@@ -63,12 +63,15 @@ p, li { text-wrap: pretty; }
   -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 700ms var(--ease-out-soft), transform 700ms var(--ease-out-soft);
+/* só esconde se houver JavaScript para revelar; sem script o conteúdo fica visível */
+@media (scripting: enabled) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 700ms var(--ease-out-soft), transform 700ms var(--ease-out-soft);
+  }
+  .reveal.is-visible { opacity: 1; transform: none; }
 }
-.reveal.is-visible { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -79,14 +82,10 @@ p, li { text-wrap: pretty; }
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-14px); }
 }
-@keyframes marquee {
-  to { transform: translateX(-50%); }
-}
-.float-slow { animation: float 6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-.float-delay { animation-delay: -3s; }
-.marquee-track { width: max-content; animation: marquee 32s linear infinite; }
-.marquee:hover .marquee-track { animation-play-state: paused; }
+/* um ciclo só e termina em repouso: movimento automático acima de 5 s exigiria pausa (WCAG 2.2.2) */
+.float-slow { animation: float 4s cubic-bezier(0.45, 0, 0.55, 1) 1; }
+.float-delay { animation-delay: 600ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  .float-slow, .marquee-track { animation: none; }
+  .float-slow { animation: none; }
 }

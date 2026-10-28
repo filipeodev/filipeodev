@@ -44,6 +44,7 @@ function TxForm({
         const v = parseCurrency(valor);
         if (!desc.trim() || !(v > 0)) {
           setError("Informe a descrição e um valor maior que zero.");
+          document.getElementById(!desc.trim() ? "f-desc" : "f-valor")?.focus();
           return;
         }
         onSubmit({ tipo, desc: desc.trim(), categoria: tipo === "receita" ? "Vendas" : categoria, valor: v });
@@ -59,7 +60,7 @@ function TxForm({
         </div>
         <div>
           <label htmlFor="f-desc" className="mb-1 block text-sm text-muted">Descrição</label>
-          <input id="f-desc" value={desc} onChange={(e) => setDesc(e.target.value)} className={inputCls} />
+          <input id="f-desc" aria-invalid={!!error && !desc.trim()} aria-describedby={error ? "f-erro" : undefined} value={desc} onChange={(e) => setDesc(e.target.value)} className={inputCls} />
         </div>
         <div>
           <label htmlFor="f-cat" className="mb-1 block text-sm text-muted">Categoria</label>
@@ -71,10 +72,10 @@ function TxForm({
         </div>
         <div>
           <label htmlFor="f-valor" className="mb-1 block text-sm text-muted">Valor em reais</label>
-          <input id="f-valor" inputMode="numeric" placeholder="R$ 0,00" value={valor} onChange={(e) => setValor(maskCurrency(e.target.value))} className={inputCls} />
+          <input id="f-valor" aria-invalid={!!error && !(parseCurrency(valor) > 0)} aria-describedby={error ? "f-erro" : undefined} inputMode="numeric" placeholder="R$ 0,00" value={valor} onChange={(e) => setValor(maskCurrency(e.target.value))} className={inputCls} />
         </div>
       </div>
-      {error && <p role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p id="f-erro" role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
       <div className="mt-6 flex flex-wrap gap-3">
         <button type="submit" className={btnPrimary}>{submitLabel}</button>
         <button type="button" onClick={onCancel} className={btnGhost}>Cancelar</button>

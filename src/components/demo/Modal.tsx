@@ -29,7 +29,11 @@ export function Modal({
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (open && !d.open) d.showModal();
+    if (open && !d.open) {
+      d.showModal();
+      // formulário: foco no primeiro campo, não no botão de fechar
+      d.querySelector<HTMLElement>("input, select, textarea")?.focus();
+    }
     if (!open && d.open) d.close();
   }, [open]);
 

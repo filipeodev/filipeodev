@@ -27,7 +27,17 @@ export function ChatDemo() {
   }, [msgs, typing]);
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // os botões são trocados a cada passo: devolve o foco ao primeiro botão novo
+  const opts = useRef<HTMLDivElement>(null);
+  const refocus = useRef(false);
+  useEffect(() => {
+    if (!refocus.current || typing) return;
+    refocus.current = false;
+    opts.current?.querySelector<HTMLButtonElement>("button[data-opt]:not(:disabled)")?.focus();
+  }, [typing, step, msgs]);
+
   const pick = (choice: string) => {
+    refocus.current = true;
     const current = flow[step];
     setMsgs((m) => [...m, { from: "me", text: choice }]);
     setTyping(true);
@@ -41,6 +51,7 @@ export function ChatDemo() {
   // a pessoa avisa que errou, e o bot repete a pergunta anterior.
   // Se a resposta ainda está "digitando", ela é cancelada e o passo atual se repete.
   const back = () => {
+    refocus.current = true;
     clearTimeout(timer.current);
     const target = typing ? step : step - 1;
     setMsgs((m) => [
@@ -53,6 +64,7 @@ export function ChatDemo() {
   };
 
   const reset = () => {
+    refocus.current = true;
     clearTimeout(timer.current);
     setStep(0);
     setTyping(false);
@@ -81,7 +93,7 @@ export function ChatDemo() {
         {typing && <p className="self-start rounded-xl bg-raised px-3 py-2 text-base text-muted">digitando…</p>}
         <div ref={end} />
       </div>
-      <div className="flex flex-wrap gap-2 border-t border-line bg-surface p-3">
+      <div ref={opts} className="flex flex-wrap gap-2 border-t border-line bg-surface p-3">
         {(step > 0 || typing) && (
           <button
             type="button"
@@ -92,7 +104,7 @@ export function ChatDemo() {
           </button>
         )}
         {finished ? (
-          <button type="button" onClick={reset} className="min-h-11 rounded-xl border border-line bg-raised px-4 py-2 text-base focus-visible:outline-2 focus-visible:outline-accent">
+          <button type="button" data-opt onClick={reset} className="min-h-11 rounded-xl border border-line bg-raised px-4 py-2 text-base focus-visible:outline-2 focus-visible:outline-accent">
             Reiniciar conversa
           </button>
         ) : (
@@ -100,6 +112,7 @@ export function ChatDemo() {
             <button
               key={o}
               type="button"
+              data-opt
               disabled={typing}
               onClick={() => pick(o)}
               className="min-h-11 rounded-xl border border-line bg-raised px-4 py-2 text-base text-fg transition-colors duration-300 hover:border-accent focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-40"

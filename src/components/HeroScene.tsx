@@ -3,8 +3,18 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export default function HeroScene() {
+type Pulse = { from: number; to: number; t: number; speed: number };
+
+export default function HeroScene({ paused }: { paused: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pausedRef = useRef(paused);
+  const startRef = useRef<() => void>(undefined);
+
+  // pausa e retoma sem recriar a cena
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (!paused) startRef.current?.();
+  }, [paused]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,33 +29,96 @@ export default function HeroScene() {
 
     const group = new THREE.Group();
     scene.add(group);
-
     const accent = new THREE.Color(0x34d399);
-    const geo = new THREE.IcosahedronGeometry(1.9, 1);
-    const wire = new THREE.LineSegments(
-      new THREE.WireframeGeometry(geo),
-      new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: 0.45 }),
-    );
-    group.add(wire);
 
-    const nodeGeo = new THREE.SphereGeometry(0.045, 8, 8);
-    const nodeMat = new THREE.MeshBasicMaterial({ color: accent });
-    const count = geo.attributes.position.count;
-    const nodes = new THREE.InstancedMesh(nodeGeo, nodeMat, count);
-    const m = new THREE.Matrix4();
-    const p = new THREE.Vector3();
-    for (let i = 0; i < count; i++) {
-      p.fromBufferAttribute(geo.attributes.position, i);
-      m.setPosition(p);
-      nodes.setMatrixAt(i, m);
+    // vértices e arestas únicas da esfera de nós
+    const geo = new THREE.IcosahedronGeometry(1.9, 1);
+    const pos = geo.attributes.position;
+    const verts: THREE.Vector3[] = [];
+    const seen = new Map<string, number>();
+    const vid = (i: number) => {
+      const v = new THREE.Vector3().fromBufferAttribute(pos, i);
+      const k = `${v.x.toFixed(3)},${v.y.toFixed(3)},${v.z.toFixed(3)}`;
+      let id = seen.get(k);
+      if (id === undefined) {
+        id = verts.length;
+        verts.push(v);
+        seen.set(k, id);
+      }
+      return id;
+    };
+    const edgeKeys = new Set<string>();
+    const edges: [number, number][] = [];
+    for (let i = 0; i < pos.count; i += 3) {
+      const t = [vid(i), vid(i + 1), vid(i + 2)];
+      for (let j = 0; j < 3; j++) {
+        const a = t[j];
+        const b = t[(j + 1) % 3];
+        const k = a < b ? `${a}-${b}` : `${b}-${a}`;
+        if (!edgeKeys.has(k)) {
+          edgeKeys.add(k);
+          edges.push([a, b]);
+        }
+      }
     }
+    const neighbors: number[][] = verts.map(() => []);
+    edges.forEach(([a, b]) => {
+      neighbors[a].push(b);
+      neighbors[b].push(a);
+    });
+
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(edges.flatMap(([a, b]) => [...verts[a].toArray(), ...verts[b].toArray()]), 3),
+    );
+    const lineMat = new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: 0.4 });
+    group.add(new THREE.LineSegments(lineGeo, lineMat));
+
+    // nós que pulsam, cada um com sua fase
+    const nodeGeo = new THREE.SphereGeometry(0.05, 10, 10);
+    const nodeMat = new THREE.MeshBasicMaterial({ color: accent });
+    const nodes = new THREE.InstancedMesh(nodeGeo, nodeMat, verts.length);
+    const phases = verts.map(() => Math.random() * Math.PI * 2);
     group.add(nodes);
 
-    const inner = new THREE.LineSegments(
-      new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(0.9, 0)),
-      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 }),
-    );
+    // pulsos de dados que andam pelas arestas
+    const pulseCount = 16;
+    const pulseGeo = new THREE.SphereGeometry(0.075, 10, 10);
+    const pulseMat = new THREE.MeshBasicMaterial({ color: 0xd1fae5 });
+    const pulseMesh = new THREE.InstancedMesh(pulseGeo, pulseMat, pulseCount);
+    const newPulse = (from: number): Pulse => {
+      const n = neighbors[from];
+      return { from, to: n[Math.floor(Math.random() * n.length)], t: 0, speed: 0.35 + Math.random() * 0.5 };
+    };
+    const pulses: Pulse[] = Array.from({ length: pulseCount }, () => {
+      const p = newPulse(Math.floor(Math.random() * verts.length));
+      p.t = Math.random();
+      return p;
+    });
+    group.add(pulseMesh);
+
+    // cubo interno que gira ao contrário
+    const innerGeo = new THREE.IcosahedronGeometry(0.9, 0);
+    const innerWire = new THREE.WireframeGeometry(innerGeo);
+    const innerMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
+    const inner = new THREE.LineSegments(innerWire, innerMat);
     group.add(inner);
+
+    // anel orbital com um satélite
+    const ringPts = Array.from({ length: 96 }, (_, i) => {
+      const a = (i / 96) * Math.PI * 2;
+      return new THREE.Vector3(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6);
+    });
+    const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
+    const ringMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.18 });
+    const orbit = new THREE.Group();
+    orbit.rotation.set(Math.PI / 3, 0, Math.PI / 8);
+    orbit.add(new THREE.LineLoop(ringGeo, ringMat));
+    const satGeo = new THREE.SphereGeometry(0.1, 12, 12);
+    const sat = new THREE.Mesh(satGeo, pulseMat);
+    orbit.add(sat);
+    group.add(orbit);
 
     const mouse = { x: 0, y: 0 };
     const onMove = (e: PointerEvent) => {
@@ -60,45 +133,85 @@ export default function HeroScene() {
       camera.aspect = w / h;
       camera.position.x = w > 900 ? -2.2 : 0;
       camera.updateProjectionMatrix();
+      if (!running) renderer.render(scene, camera);
     };
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let raf = 0;
     const clock = new THREE.Clock();
+    const m = new THREE.Matrix4();
+    const p3 = new THREE.Vector3();
+    const q = new THREE.Quaternion();
+    const s3 = new THREE.Vector3();
+    let time = 0;
+    let raf = 0;
+    let running = false;
+    let visible = true;
 
     const frame = () => {
-      const t = clock.getElapsedTime();
-      group.rotation.y = t * 0.12 + mouse.x * 0.25;
-      group.rotation.x = Math.sin(t * 0.2) * 0.1 + mouse.y * 0.15;
-      inner.rotation.y = -t * 0.25;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      time += dt;
+
+      group.rotation.y = time * 0.14 + mouse.x * 0.25;
+      group.rotation.x = Math.sin(time * 0.2) * 0.1 + mouse.y * 0.15;
+      group.scale.setScalar(1 + Math.sin(time * 0.8) * 0.025);
+      inner.rotation.y = -time * 0.3;
+      inner.rotation.x = time * 0.15;
+      orbit.rotation.y = time * 0.12;
+      sat.position.set(Math.cos(time * 0.9) * 2.6, 0, Math.sin(time * 0.9) * 2.6);
+
+      for (let i = 0; i < verts.length; i++) {
+        const k = 1 + 0.55 * Math.sin(time * 2 + phases[i]);
+        m.compose(verts[i], q, s3.setScalar(k));
+        nodes.setMatrixAt(i, m);
+      }
+      nodes.instanceMatrix.needsUpdate = true;
+
+      pulses.forEach((p, i) => {
+        p.t += dt * p.speed;
+        if (p.t >= 1) Object.assign(p, newPulse(p.to));
+        p3.lerpVectors(verts[p.from], verts[p.to], p.t);
+        m.compose(p3, q, s3.setScalar(0.8 + Math.sin(p.t * Math.PI) * 0.7));
+        pulseMesh.setMatrixAt(i, m);
+      });
+      pulseMesh.instanceMatrix.needsUpdate = true;
+
       renderer.render(scene, camera);
-      if (!reduced) raf = requestAnimationFrame(frame);
+      running = !reduced && visible && !pausedRef.current;
+      if (running) raf = requestAnimationFrame(frame);
+    };
+
+    const start = () => {
+      cancelAnimationFrame(raf);
+      clock.getDelta();
+      raf = requestAnimationFrame(frame);
+    };
+    startRef.current = () => {
+      if (!reduced && visible) start();
     };
 
     const io = new IntersectionObserver(([entry]) => {
-      cancelAnimationFrame(raf);
-      if (entry.isIntersecting) raf = requestAnimationFrame(frame);
+      visible = entry.isIntersecting;
+      if (visible && !pausedRef.current && !reduced) start();
+      else cancelAnimationFrame(raf);
     });
     io.observe(canvas);
 
     resize();
     window.addEventListener("resize", resize);
     if (!reduced) window.addEventListener("pointermove", onMove, { passive: true });
-    raf = requestAnimationFrame(frame);
+    start();
 
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
+      startRef.current = undefined;
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onMove);
-      geo.dispose();
-      nodeGeo.dispose();
-      nodeMat.dispose();
+      [geo, lineGeo, nodeGeo, pulseGeo, innerGeo, innerWire, ringGeo, satGeo, lineMat, nodeMat, pulseMat, innerMat, ringMat].forEach((d) =>
+        d.dispose(),
+      );
       nodes.dispose();
-      wire.geometry.dispose();
-      (wire.material as THREE.Material).dispose();
-      inner.geometry.dispose();
-      (inner.material as THREE.Material).dispose();
+      pulseMesh.dispose();
       renderer.dispose();
     };
   }, []);

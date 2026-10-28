@@ -33,7 +33,7 @@ export function Projects() {
                   </ul>
                   <Link
                     href={p.demo}
-                    className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border border-line bg-raised px-4 py-2 text-base font-semibold text-fg transition-colors duration-300 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-line bg-raised px-4 py-2 text-base font-semibold text-fg transition-colors duration-300 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
                     Ver demonstração<span className="sr-only"> de {p.name}</span>
                   </Link>

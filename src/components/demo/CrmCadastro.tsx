@@ -24,20 +24,23 @@ function RowForm({
   const uid = useId();
   const [form, setForm] = useState<Row>(initial);
   const [error, setError] = useState("");
+  const [invalid, setInvalid] = useState<string[]>([]);
+
+  const fail = (msg: string, keys: string[]) => {
+    setError(msg);
+    setInvalid(keys);
+    document.getElementById(`${uid}-${keys[0]}`)?.focus();
+  };
 
   return (
     <form
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        if (fields.some((f) => !form[f.key]?.trim())) {
-          setError("Preencha todos os campos.");
-          return;
-        }
-        if (fields.some((f) => f.type === "tel" && phoneDigits(form[f.key]) < 10)) {
-          setError("Informe o telefone com DDD.");
-          return;
-        }
+        const empty = fields.filter((f) => !form[f.key]?.trim()).map((f) => f.key);
+        if (empty.length) return fail("Preencha todos os campos.", empty);
+        const badPhone = fields.filter((f) => f.type === "tel" && phoneDigits(form[f.key]) < 10).map((f) => f.key);
+        if (badPhone.length) return fail("Informe o telefone com DDD.", badPhone);
         onSubmit(form);
       }}
     >
@@ -55,13 +58,15 @@ function RowForm({
               inputMode={f.type === "tel" ? "tel" : undefined}
               autoComplete={f.type === "tel" ? "off" : undefined}
               placeholder={f.type === "tel" ? "(11) 90000-0000" : undefined}
+              aria-invalid={invalid.includes(f.key)}
+              aria-describedby={invalid.includes(f.key) ? `${uid}-err` : undefined}
               className={inputCls}
             />
           </div>
         ))}
       </div>
       {error && (
-        <p role="alert" className="mt-3 text-sm text-red-400">
+        <p id={`${uid}-err`} role="alert" className="mt-3 text-sm text-red-400">
           {error}
         </p>
       )}

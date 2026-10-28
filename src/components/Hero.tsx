@@ -5,9 +5,7 @@ export function Hero() {
   return (
     <section id="inicio" className="relative isolate flex min-h-dvh items-center overflow-hidden">
       <div className="grid-lines absolute inset-0 -z-20" aria-hidden />
-      <div className="absolute inset-0 -z-10" aria-hidden>
-        <HeroSceneLoader />
-      </div>
+      <HeroSceneLoader />
       <div className="mx-auto w-full max-w-6xl px-4 pt-24 pb-16 sm:px-6">
         <p className="mb-4 font-mono text-sm tracking-wider text-accent uppercase">Filipe · Desenvolvedor full stack</p>
         <h1 className="hero-title max-w-[680px] text-5xl font-semibold tracking-tight sm:text-6xl">

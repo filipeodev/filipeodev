@@ -21,6 +21,7 @@ export function AgendaDemo() {
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
 
   const sel = (on: boolean) => (on ? "border-accent bg-raised text-fg" : "border-line bg-surface text-muted hover:text-fg");
   const proName = pros.find((p) => p.id === pro)?.name;
@@ -54,17 +55,35 @@ export function AgendaDemo() {
 
   return (
     <form
+      noValidate
       className="max-w-2xl space-y-8"
       onSubmit={(e) => {
         e.preventDefault();
-        if (pro && day && time && name.trim()) setDone(true);
+        // valida no envio e leva o foco ao primeiro passo que falta
+        const missing = !pro
+          ? ["Escolha um profissional.", "agenda-pro-0"]
+          : !day
+            ? ["Escolha um dia.", "agenda-dia-0"]
+            : !time
+              ? ["Escolha um horário livre.", "agenda-hora"]
+              : !name.trim()
+                ? ["Informe seu nome.", "agenda-nome"]
+                : null;
+        if (missing) {
+          setError(missing[0]);
+          const target = missing[1] === "agenda-hora" ? document.querySelector<HTMLElement>("[data-hora]:not(:disabled)") : document.getElementById(missing[1]);
+          target?.focus();
+          return;
+        }
+        setError("");
+        setDone(true);
       }}
     >
       <fieldset>
         <legend className="mb-3 font-mono text-sm tracking-wider text-muted uppercase">1. Profissional</legend>
         <div className="flex flex-wrap gap-3">
-          {pros.map((p) => (
-            <button key={p.id} type="button" aria-pressed={pro === p.id} onClick={() => { setPro(p.id); setTime(""); }} className={`${chip} ${sel(pro === p.id)}`}>
+          {pros.map((p, i) => (
+            <button key={p.id} id={`agenda-pro-${i}`} type="button" aria-pressed={pro === p.id} onClick={() => { setPro(p.id); setTime(""); }} className={`${chip} ${sel(pro === p.id)}`}>
               {p.name} <span className="text-sm text-muted">· {p.role}</span>
             </button>
           ))}
@@ -74,8 +93,8 @@ export function AgendaDemo() {
       <fieldset disabled={!pro} className="disabled:opacity-50">
         <legend className="mb-3 font-mono text-sm tracking-wider text-muted uppercase">2. Dia</legend>
         <div className="flex flex-wrap gap-3">
-          {days.map((d) => (
-            <button key={d} type="button" aria-pressed={day === d} onClick={() => { setDay(d); setTime(""); }} className={`${chip} ${sel(day === d)}`}>
+          {days.map((d, i) => (
+            <button key={d} id={`agenda-dia-${i}`} type="button" aria-pressed={day === d} onClick={() => { setDay(d); setTime(""); }} className={`${chip} ${sel(day === d)}`}>
               {d}
             </button>
           ))}
@@ -88,7 +107,7 @@ export function AgendaDemo() {
           {times.map((t) => {
             const busy = taken.has(`${pro}|${day}|${t}`);
             return (
-              <button key={t} type="button" disabled={busy} aria-pressed={time === t} onClick={() => setTime(t)} className={`${chip} font-mono tabular-nums ${sel(time === t)}`}>
+              <button key={t} type="button" data-hora disabled={busy} aria-pressed={time === t} onClick={() => setTime(t)} className={`${chip} font-mono tabular-nums ${sel(time === t)}`}>
                 {t}
                 {busy && <span className="sr-only"> (ocupado)</span>}
               </button>
@@ -106,14 +125,21 @@ export function AgendaDemo() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoComplete="given-name"
+          aria-invalid={error === "Informe seu nome."}
+          aria-describedby={error ? "agenda-erro" : undefined}
           className="min-h-11 w-full max-w-sm rounded-xl border border-line bg-surface px-4 py-2 text-base text-fg focus-visible:outline-2 focus-visible:outline-accent"
         />
       </div>
 
+      {error && (
+        <p id="agenda-erro" role="alert" className="text-base text-red-400">
+          {error}
+        </p>
+      )}
+
       <button
         type="submit"
-        disabled={!pro || !day || !time || !name.trim()}
-        className="min-h-11 rounded-xl bg-accent px-4 py-2 text-base font-semibold text-on-accent transition-colors duration-300 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-40"
+        className="min-h-11 rounded-xl bg-accent px-4 py-2 text-base font-semibold text-on-accent transition-colors duration-300 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         Confirmar horário
       </button>

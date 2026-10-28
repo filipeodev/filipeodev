@@ -1,4 +1,5 @@
 import { whatsappLink } from "@/lib/whatsapp";
+import { MobileMenu } from "./MobileMenu";
 
 const links = [
   { href: "#servicos", label: "Serviços" },
@@ -12,7 +13,7 @@ export function Header() {
     <header className="fixed inset-x-0 top-3 z-50 flex justify-center px-4">
       <nav
         aria-label="Principal"
-        className="flex items-center gap-3 rounded-2xl border border-line bg-canvas/70 p-2 pl-4 backdrop-blur-md"
+        className="relative flex items-center gap-3 rounded-2xl border border-line bg-canvas/70 p-2 pl-4 backdrop-blur-md"
       >
         <a href="#inicio" className="font-mono text-sm font-semibold text-fg focus-visible:outline-2 focus-visible:outline-accent">
           filipe<span className="text-accent">.dev</span>
@@ -22,18 +23,19 @@ export function Header() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="rounded-lg px-3 py-2 text-sm text-muted transition-colors duration-300 hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+                className="inline-flex min-h-11 items-center rounded-lg px-3 text-sm text-muted transition-colors duration-300 hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
               >
                 {l.label}
               </a>
             </li>
           ))}
         </ul>
+        <MobileMenu links={links} />
         <a
           href={whatsappLink()}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-xl bg-accent px-3 py-2 text-sm font-semibold text-on-accent transition-colors duration-300 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="inline-flex min-h-11 items-center rounded-xl bg-accent px-3 text-sm font-semibold text-on-accent transition-colors duration-300 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           Conversar
         </a>

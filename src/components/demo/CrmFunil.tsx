@@ -33,6 +33,7 @@ function LeadForm({
         const v = parseCurrency(value);
         if (!name.trim() || !company.trim() || !(v > 0)) {
           setError("Informe nome, empresa e um valor maior que zero.");
+          document.getElementById(!name.trim() ? "l-n" : !company.trim() ? "l-c" : "l-v")?.focus();
           return;
         }
         onSubmit({ name: name.trim(), company: company.trim(), value: v, stage });
@@ -41,15 +42,15 @@ function LeadForm({
       <div className="space-y-4">
         <div>
           <label htmlFor="l-n" className="mb-1 block text-sm text-muted">Nome do contato</label>
-          <input id="l-n" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
+          <input id="l-n" aria-invalid={!!error && !name.trim()} aria-describedby={error ? "l-erro" : undefined} value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
         </div>
         <div>
           <label htmlFor="l-c" className="mb-1 block text-sm text-muted">Empresa</label>
-          <input id="l-c" value={company} onChange={(e) => setCompany(e.target.value)} className={inputCls} />
+          <input id="l-c" aria-invalid={!!error && !company.trim()} aria-describedby={error ? "l-erro" : undefined} value={company} onChange={(e) => setCompany(e.target.value)} className={inputCls} />
         </div>
         <div>
           <label htmlFor="l-v" className="mb-1 block text-sm text-muted">Valor do negócio em reais</label>
-          <input id="l-v" inputMode="numeric" placeholder="R$ 0,00" value={value} onChange={(e) => setValue(maskCurrency(e.target.value))} className={inputCls} />
+          <input id="l-v" aria-invalid={!!error && !(parseCurrency(value) > 0)} aria-describedby={error ? "l-erro" : undefined} inputMode="numeric" placeholder="R$ 0,00" value={value} onChange={(e) => setValue(maskCurrency(e.target.value))} className={inputCls} />
         </div>
         <div>
           <label htmlFor="l-s" className="mb-1 block text-sm text-muted">Etapa</label>
@@ -60,7 +61,7 @@ function LeadForm({
           </select>
         </div>
       </div>
-      {error && <p role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p id="l-erro" role="alert" className="mt-3 text-sm text-red-400">{error}</p>}
       <div className="mt-6 flex flex-wrap gap-3">
         <button type="submit" className={btnPrimary}>{submitLabel}</button>
         <button type="button" onClick={onCancel} className={btnGhost}>Cancelar</button>
