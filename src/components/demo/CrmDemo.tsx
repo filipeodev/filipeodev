@@ -1,107 +1,106 @@
 "use client";
 
 import { useState } from "react";
+import {
+  initialClientes,
+  initialFornecedores,
+  initialLeads,
+  initialTx,
+  stages,
+  type Lead,
+  type Row,
+  type Tx,
+} from "@/data/crmDemo";
+import { CrmCadastro } from "./CrmCadastro";
+import { CrmFinanceiro } from "./CrmFinanceiro";
+import { CrmFunil } from "./CrmFunil";
+import { CrmVisao } from "./CrmVisao";
 
-const columns = ["Novo contato", "Em conversa", "Proposta enviada", "Fechado"] as const;
+const menu = [
+  { id: "visao", label: "Visão geral" },
+  { id: "funil", label: "Funil de vendas" },
+  { id: "clientes", label: "Clientes" },
+  { id: "fornecedores", label: "Fornecedores" },
+  { id: "financeiro", label: "Despesas e receitas" },
+] as const;
 
-type Lead = { id: number; name: string; company: string; value: string; stage: number; history: string[] };
-
-const initial: Lead[] = [
-  { id: 1, name: "Marcos Tavares", company: "Tavares Distribuidora", value: "R$ 4.820", stage: 0, history: ["Chegou pelo formulário do site"] },
-  { id: 2, name: "Bianca Rocha", company: "Studio Rocha", value: "R$ 1.390", stage: 0, history: ["Indicação de cliente"] },
-  { id: 3, name: "Heitor Lacerda", company: "Lacerda Odontologia", value: "R$ 7.250", stage: 1, history: ["Primeira ligação feita", "Pediu orçamento"] },
-  { id: 4, name: "Sofia Mendes", company: "Mendes Contabilidade", value: "R$ 3.610", stage: 2, history: ["Reunião feita", "Proposta enviada por email"] },
-  { id: 5, name: "Otávio Brandão", company: "Brandão Motos", value: "R$ 9.940", stage: 3, history: ["Proposta aceita", "Contrato assinado"] },
-];
+type Tab = (typeof menu)[number]["id"];
 
 export function CrmDemo() {
-  const [leads, setLeads] = useState(initial);
-  const [openId, setOpenId] = useState<number | null>(1);
-  const [dragId, setDragId] = useState<number | null>(null);
+  const [tab, setTab] = useState<Tab>("visao");
+  const [leads, setLeads] = useState<Lead[]>(initialLeads);
+  const [clientes, setClientes] = useState<Row[]>(initialClientes);
+  const [fornecedores, setFornecedores] = useState<Row[]>(initialFornecedores);
+  const [tx, setTx] = useState<Tx[]>(initialTx);
 
   const move = (id: number, stage: number) =>
     setLeads((ls) =>
       ls.map((l) =>
-        l.id === id && l.stage !== stage ? { ...l, stage, history: [...l.history, `Movido para "${columns[stage]}"`] } : l,
+        l.id === id && l.stage !== stage ? { ...l, stage, history: [...l.history, `Movido para "${stages[stage]}"`] } : l,
       ),
     );
 
-  const open = leads.find((l) => l.id === openId);
+  const current = menu.find((m) => m.id === tab)!;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {columns.map((col, ci) => (
-          <section
-            key={col}
-            aria-label={col}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => {
-              if (dragId !== null) move(dragId, ci);
-              setDragId(null);
-            }}
-            className="min-h-40 rounded-2xl border border-line bg-surface p-3"
-          >
-            <h2 className="mb-3 font-mono text-xs tracking-wider text-muted uppercase">
-              {col} · {leads.filter((l) => l.stage === ci).length}
-            </h2>
-            <ul className="space-y-2">
-              {leads
-                .filter((l) => l.stage === ci)
-                .map((l) => (
-                  <li
-                    key={l.id}
-                    draggable
-                    onDragStart={() => setDragId(l.id)}
-                    className={`rounded-xl border bg-raised p-3 ${openId === l.id ? "border-accent" : "border-line"}`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setOpenId(l.id)}
-                      className="block w-full min-h-11 text-start focus-visible:outline-2 focus-visible:outline-accent"
-                    >
-                      <span className="block text-base font-semibold">{l.name}</span>
-                      <span className="block text-sm text-muted">{l.company}</span>
-                      <span className="mt-1 block font-mono text-sm text-accent tabular-nums">{l.value}</span>
-                    </button>
-                    <label className="mt-2 block text-xs text-muted">
-                      <span className="sr-only">Mover {l.name} para</span>
-                      <select
-                        value={l.stage}
-                        onChange={(e) => move(l.id, Number(e.target.value))}
-                        className="min-h-11 w-full rounded-lg border border-line bg-surface px-2 text-sm text-fg focus-visible:outline-2 focus-visible:outline-accent"
-                      >
-                        {columns.map((c, i) => (
-                          <option key={c} value={i}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </li>
-                ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+    <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+      <nav aria-label="Menu do sistema" className="h-fit rounded-2xl border border-line bg-surface p-2">
+        <ul className="flex flex-wrap gap-1 lg:flex-col">
+          {menu.map((m) => (
+            <li key={m.id} className="lg:w-full">
+              <button
+                type="button"
+                aria-current={tab === m.id ? "page" : undefined}
+                onClick={() => setTab(m.id)}
+                className={`min-h-11 w-full rounded-xl px-3 py-2 text-start text-base transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-accent ${
+                  tab === m.id ? "bg-raised font-semibold text-accent" : "text-muted hover:text-fg"
+                }`}
+              >
+                {m.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <aside aria-label="Histórico do cliente" className="h-fit rounded-2xl border border-line bg-surface p-4">
-        {open ? (
-          <>
-            <h2 className="text-xl font-semibold">{open.name}</h2>
-            <p className="text-sm text-muted">{open.company}</p>
-            <ol className="mt-4 space-y-2 border-s border-line ps-4">
-              {open.history.map((h, i) => (
-                <li key={i} className="text-base">
-                  {h}
-                </li>
-              ))}
-            </ol>
-          </>
-        ) : (
-          <p className="text-base text-muted">Escolha um cliente para ver o histórico.</p>
+      <section aria-labelledby="crm-title" className="min-w-0">
+        <h2 id="crm-title" className="mb-4 text-2xl font-semibold">
+          {current.label}
+        </h2>
+        {tab === "visao" && <CrmVisao leads={leads} tx={tx} />}
+        {tab === "funil" && <CrmFunil leads={leads} onMove={move} />}
+        {tab === "clientes" && (
+          <CrmCadastro
+            title="Clientes cadastrados"
+            singular="cliente"
+            fields={[
+              { key: "nome", label: "Nome" },
+              { key: "empresa", label: "Empresa" },
+              { key: "telefone", label: "Telefone", type: "tel" },
+              { key: "cidade", label: "Cidade" },
+            ]}
+            rows={clientes}
+            onAdd={(r) => setClientes((c) => [...c, r])}
+          />
         )}
-      </aside>
+        {tab === "fornecedores" && (
+          <CrmCadastro
+            title="Fornecedores cadastrados"
+            singular="fornecedor"
+            fields={[
+              { key: "nome", label: "Nome" },
+              { key: "categoria", label: "Categoria" },
+              { key: "telefone", label: "Telefone", type: "tel" },
+              { key: "prazo", label: "Prazo de entrega" },
+            ]}
+            rows={fornecedores}
+            onAdd={(r) => setFornecedores((f) => [...f, r])}
+          />
+        )}
+        {tab === "financeiro" && (
+          <CrmFinanceiro tx={tx} onAdd={(t) => setTx((x) => [...x, { ...t, id: x.length + 1 }])} />
+        )}
+      </section>
     </div>
   );
 }

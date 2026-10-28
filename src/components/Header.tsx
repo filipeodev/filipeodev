@@ -12,7 +12,7 @@ export function Header() {
     <header className="fixed inset-x-0 top-3 z-50 flex justify-center px-4">
       <nav
         aria-label="Principal"
-        className="flex items-center gap-3 rounded-2xl border border-line bg-base/70 p-2 pl-4 backdrop-blur-md"
+        className="flex items-center gap-3 rounded-2xl border border-line bg-canvas/70 p-2 pl-4 backdrop-blur-md"
       >
         <a href="#inicio" className="font-mono text-sm font-semibold text-fg focus-visible:outline-2 focus-visible:outline-accent">
           filipe<span className="text-accent">.dev</span>

@@ -7,7 +7,7 @@ export function LandingDemo() {
   const [sent, setSent] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-line bg-base">
+    <div className="overflow-hidden rounded-2xl border border-line bg-canvas">
       <div className="border-b border-line bg-surface px-6 py-3 font-semibold">Clínica Aurora</div>
       <div className="grid gap-8 p-6 sm:p-10 md:grid-cols-2">
         <div>

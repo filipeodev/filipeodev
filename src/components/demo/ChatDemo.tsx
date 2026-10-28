@@ -62,7 +62,7 @@ export function ChatDemo() {
   const finished = step >= flow.length;
 
   return (
-    <div className="mx-auto max-w-md overflow-hidden rounded-2xl border border-line bg-base">
+    <div className="mx-auto max-w-md overflow-hidden rounded-2xl border border-line bg-canvas">
       <div className="border-b border-line bg-surface px-4 py-3">
         <p className="font-semibold">Clínica Lume</p>
         <p className="font-mono text-xs text-accent">assistente virtual</p>
