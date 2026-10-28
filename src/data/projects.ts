@@ -9,24 +9,16 @@ export type Project = {
 };
 
 // Exemplos fictícios. Troque por projetos reais quando tiver.
+// Ordem segue a dos serviços: agendamento, WhatsApp, CRM, landing page.
 export const projects: Project[] = [
   {
-    id: "clinica",
-    category: "Landing page",
-    name: "Clínica Aurora",
-    summary: "Página de captação para uma clínica de estética, com formulário e botão de WhatsApp.",
-    metric: "Taxa de contato de 7,4%",
-    stack: ["Next.js", "Tailwind"],
-    mock: "landing",
-  },
-  {
-    id: "vendas",
-    category: "CRM",
-    name: "Pipeline Norte",
-    summary: "Funil de vendas com histórico por cliente, tarefas e relatório semanal.",
-    metric: "38 vendedores no mesmo painel",
-    stack: ["Laravel", "MySQL"],
-    mock: "crm",
+    id: "agenda",
+    category: "Agendamento",
+    name: "Barbearia Sete",
+    summary: "Agenda online por profissional, com lembrete automático e pagamento de sinal.",
+    metric: "Faltas caíram de 22% para 6%",
+    stack: ["Next.js", "Prisma", "Postgres"],
+    mock: "agenda",
   },
   {
     id: "bot",
@@ -38,12 +30,21 @@ export const projects: Project[] = [
     mock: "whatsapp",
   },
   {
-    id: "agenda",
-    category: "Agendamento",
-    name: "Barbearia Sete",
-    summary: "Agenda online por profissional, com lembrete automático e pagamento de sinal.",
-    metric: "Faltas caíram de 22% para 6%",
-    stack: ["Next.js", "Prisma", "Postgres"],
-    mock: "agenda",
+    id: "vendas",
+    category: "CRM",
+    name: "Pipeline Norte",
+    summary: "Funil de vendas com histórico por cliente, tarefas e relatório semanal.",
+    metric: "38 vendedores no mesmo painel",
+    stack: ["Laravel", "MySQL"],
+    mock: "crm",
+  },
+  {
+    id: "clinica",
+    category: "Landing page",
+    name: "Clínica Aurora",
+    summary: "Página de captação para uma clínica de estética, com formulário e botão de WhatsApp.",
+    metric: "Taxa de contato de 7,4%",
+    stack: ["Next.js", "Tailwind"],
+    mock: "landing",
   },
 ];
