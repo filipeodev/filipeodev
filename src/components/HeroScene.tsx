@@ -121,7 +121,6 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       if (!running) renderer.render(scene, camera);
     };
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const clock = new THREE.Clock();
     const m = new THREE.Matrix4();
     const p3 = new THREE.Vector3();
@@ -159,7 +158,7 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       pulseMesh.instanceMatrix.needsUpdate = true;
 
       renderer.render(scene, camera);
-      running = !reduced && visible && !pausedRef.current;
+      running = visible && !pausedRef.current;
       if (running) raf = requestAnimationFrame(frame);
     };
 
@@ -169,12 +168,12 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       raf = requestAnimationFrame(frame);
     };
     startRef.current = () => {
-      if (!reduced && visible) start();
+      if (visible) start();
     };
 
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && !pausedRef.current && !reduced) start();
+      if (visible && !pausedRef.current) start();
       else cancelAnimationFrame(raf);
     });
     io.observe(canvas);
@@ -182,7 +181,7 @@ export default function HeroScene({ paused }: { paused: boolean }) {
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
-    if (!reduced) window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
     start();
 
     return () => {
