@@ -31,8 +31,8 @@ export function Modal({
     if (!d) return;
     if (open && !d.open) {
       d.showModal();
-      // formulário: foco no primeiro campo, não no botão de fechar
-      d.querySelector<HTMLElement>("input, select, textarea")?.focus();
+      // foco no primeiro campo (ou no item marcado com data-autofocus), não no botão de fechar
+      d.querySelector<HTMLElement>("[data-autofocus], input, select, textarea")?.focus();
     }
     if (!open && d.open) d.close();
   }, [open]);
@@ -88,7 +88,7 @@ export function ConfirmDelete({
         <button type="button" onClick={onConfirm} className={btnDanger}>
           Excluir
         </button>
-        <button type="button" onClick={onCancel} className={btnGhost}>
+        <button type="button" data-autofocus onClick={onCancel} className={btnGhost}>
           Cancelar
         </button>
       </div>
