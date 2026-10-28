@@ -79,14 +79,13 @@ export function ConfirmDelete({
   onConfirm: () => void;
 }) {
   return (
-    <Modal open={open} onClose={onCancel} title="Excluir registro">
+    <Modal open={open} onClose={onCancel} title={`Excluir "${what}"?`}>
       <p className="text-base text-muted">
-        Tem certeza que deseja excluir <strong className="text-fg">{what}</strong>? Na demonstração, a exclusão vale só até
-        recarregar a página.
+        O registro sai da lista. Na demonstração, ele volta quando você recarrega a página.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <button type="button" onClick={onConfirm} className={btnDanger}>
-          Excluir
+          Excluir registro
         </button>
         <button type="button" data-autofocus onClick={onCancel} className={btnGhost}>
           Cancelar

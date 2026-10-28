@@ -1,5 +1,5 @@
 export const faq = [
-  { q: "Quanto tempo leva um projeto?", a: "Uma landing page fica pronta em cerca de uma semana. Um CRM ou sistema de agendamento leva de três a seis semanas, conforme o tamanho." },
+  { q: "Quanto tempo leva um projeto?", a: "Uma landing page fica pronta em cerca de uma semana. A primeira versão de um CRM (o MVP) leva de três a seis semanas e pode levar mais, conforme a complexidade. Para agendamento e automações, o prazo vai na proposta." },
   { q: "Quanto custa?", a: "Depende do que você precisa. Depois da primeira conversa envio uma proposta com valor fechado, sem surpresa no meio do caminho." },
   { q: "Preciso entender de tecnologia?", a: "Não. Eu explico cada etapa em linguagem simples e entrego um treinamento curto no final." },
   { q: "O que preciso enviar para começar?", a: "Uma conversa sobre o seu negócio, seu logo e as cores, se tiver. O restante a gente define juntos." },

@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="border-t border-line">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 sm:px-6">
-        <p className="font-mono text-sm text-muted">© Filipe · Desenvolvedor full stack</p>
+        <p className="font-mono text-sm text-muted">© filipe.odev · Desenvolvimento de sistemas</p>
         <nav aria-label="Informações legais" className="flex flex-wrap gap-4">
           <Link href="/privacidade" className={linkCls}>
             Privacidade

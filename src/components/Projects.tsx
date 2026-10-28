@@ -24,7 +24,7 @@ export function Projects() {
                   <h3 className="mt-1 text-2xl font-semibold">{p.name}</h3>
                   <p className="mt-2 text-base text-muted">{p.summary}</p>
                   <p className="mt-3 font-mono text-sm text-fg">{p.metric}</p>
-                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Tecnologias usadas">
+                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Ferramentas usadas">
                     {p.stack.map((s) => (
                       <li key={s} className="rounded-lg border border-line px-2 py-1 font-mono text-xs text-muted">
                         {s}
