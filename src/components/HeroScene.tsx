@@ -76,15 +76,15 @@ export default function HeroScene({ paused }: { paused: boolean }) {
     group.add(new THREE.LineSegments(lineGeo, lineMat));
 
     // nós que pulsam, cada um com sua fase
-    const nodeGeo = new THREE.SphereGeometry(0.05, 10, 10);
+    const nodeGeo = new THREE.SphereGeometry(0.045, 10, 10);
     const nodeMat = new THREE.MeshBasicMaterial({ color: accent });
     const nodes = new THREE.InstancedMesh(nodeGeo, nodeMat, verts.length);
     const phases = verts.map(() => Math.random() * Math.PI * 2);
     group.add(nodes);
 
     // pulsos de dados que andam pelas arestas
-    const pulseCount = 16;
-    const pulseGeo = new THREE.SphereGeometry(0.075, 10, 10);
+    const pulseCount = 10;
+    const pulseGeo = new THREE.SphereGeometry(0.035, 10, 10);
     const pulseMat = new THREE.MeshBasicMaterial({ color: 0xd1fae5 });
     const pulseMesh = new THREE.InstancedMesh(pulseGeo, pulseMat, pulseCount);
     const newPulse = (from: number): Pulse => {
@@ -98,27 +98,12 @@ export default function HeroScene({ paused }: { paused: boolean }) {
     });
     group.add(pulseMesh);
 
-    // cubo interno que gira ao contrário
+    // forma interna que gira ao contrário
     const innerGeo = new THREE.IcosahedronGeometry(0.9, 0);
     const innerWire = new THREE.WireframeGeometry(innerGeo);
     const innerMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
     const inner = new THREE.LineSegments(innerWire, innerMat);
     group.add(inner);
-
-    // anel orbital com um satélite
-    const ringPts = Array.from({ length: 96 }, (_, i) => {
-      const a = (i / 96) * Math.PI * 2;
-      return new THREE.Vector3(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6);
-    });
-    const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
-    const ringMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.18 });
-    const orbit = new THREE.Group();
-    orbit.rotation.set(Math.PI / 3, 0, Math.PI / 8);
-    orbit.add(new THREE.LineLoop(ringGeo, ringMat));
-    const satGeo = new THREE.SphereGeometry(0.1, 12, 12);
-    const sat = new THREE.Mesh(satGeo, pulseMat);
-    orbit.add(sat);
-    group.add(orbit);
 
     const mouse = { x: 0, y: 0 };
     const onMove = (e: PointerEvent) => {
@@ -156,11 +141,9 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       group.scale.setScalar(1 + Math.sin(time * 0.8) * 0.025);
       inner.rotation.y = -time * 0.3;
       inner.rotation.x = time * 0.15;
-      orbit.rotation.y = time * 0.12;
-      sat.position.set(Math.cos(time * 0.9) * 2.6, 0, Math.sin(time * 0.9) * 2.6);
 
       for (let i = 0; i < verts.length; i++) {
-        const k = 1 + 0.55 * Math.sin(time * 2 + phases[i]);
+        const k = 1 + 0.25 * Math.sin(time * 1.6 + phases[i]);
         m.compose(verts[i], q, s3.setScalar(k));
         nodes.setMatrixAt(i, m);
       }
@@ -170,7 +153,7 @@ export default function HeroScene({ paused }: { paused: boolean }) {
         p.t += dt * p.speed;
         if (p.t >= 1) Object.assign(p, newPulse(p.to));
         p3.lerpVectors(verts[p.from], verts[p.to], p.t);
-        m.compose(p3, q, s3.setScalar(0.8 + Math.sin(p.t * Math.PI) * 0.7));
+        m.compose(p3, q, s3.setScalar(1));
         pulseMesh.setMatrixAt(i, m);
       });
       pulseMesh.instanceMatrix.needsUpdate = true;
@@ -197,7 +180,8 @@ export default function HeroScene({ paused }: { paused: boolean }) {
     io.observe(canvas);
 
     resize();
-    window.addEventListener("resize", resize);
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
     if (!reduced) window.addEventListener("pointermove", onMove, { passive: true });
     start();
 
@@ -205,9 +189,9 @@ export default function HeroScene({ paused }: { paused: boolean }) {
       cancelAnimationFrame(raf);
       io.disconnect();
       startRef.current = undefined;
-      window.removeEventListener("resize", resize);
+      ro.disconnect();
       window.removeEventListener("pointermove", onMove);
-      [geo, lineGeo, nodeGeo, pulseGeo, innerGeo, innerWire, ringGeo, satGeo, lineMat, nodeMat, pulseMat, innerMat, ringMat].forEach((d) =>
+      [geo, lineGeo, nodeGeo, pulseGeo, innerGeo, innerWire, lineMat, nodeMat, pulseMat, innerMat].forEach((d) =>
         d.dispose(),
       );
       nodes.dispose();
