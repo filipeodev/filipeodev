@@ -14,6 +14,10 @@ export function DemoShell({ title, intro, children }: { title: string; intro: st
       <p role="note" className="mt-4 rounded-xl border border-line bg-surface px-4 py-3 font-mono text-sm text-accent">
         Demonstração com dados fictícios. Nada aqui é salvo ou enviado.
       </p>
+      <p className="mt-3 max-w-[680px] text-base text-muted">
+        Esta é só uma prévia do que o sistema pode ter. Ele pode ser totalmente personalizado: telas, regras, integrações e
+        visual são definidos de acordo com o seu negócio.
+      </p>
       <h1 className="mt-8 max-w-[680px] text-4xl font-semibold tracking-tight">{title}</h1>
       <p className="mt-3 max-w-[680px] text-lg text-muted">{intro}</p>
       <div className="mt-8">{children}</div>
