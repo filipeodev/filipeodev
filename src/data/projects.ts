@@ -6,6 +6,7 @@ export type Project = {
   metric: string;
   stack: string[];
   mock: "landing" | "crm" | "whatsapp" | "agenda";
+  demo: string;
 };
 
 // Exemplos fictícios. Troque por projetos reais quando tiver.
@@ -19,6 +20,7 @@ export const projects: Project[] = [
     metric: "Faltas caíram de 22% para 6%",
     stack: ["Next.js", "Prisma", "Postgres"],
     mock: "agenda",
+    demo: "/demo/agendamento",
   },
   {
     id: "bot",
@@ -28,6 +30,7 @@ export const projects: Project[] = [
     metric: "61% dos chamados resolvidos sozinho",
     stack: ["Next.js", "Supabase", "Postgres"],
     mock: "whatsapp",
+    demo: "/demo/whatsapp",
   },
   {
     id: "vendas",
@@ -37,6 +40,7 @@ export const projects: Project[] = [
     metric: "38 vendedores no mesmo painel",
     stack: ["Laravel", "MySQL"],
     mock: "crm",
+    demo: "/demo/crm",
   },
   {
     id: "clinica",
@@ -46,5 +50,6 @@ export const projects: Project[] = [
     metric: "Taxa de contato de 7,4%",
     stack: ["Next.js", "Tailwind"],
     mock: "landing",
+    demo: "/demo/landing",
   },
 ];

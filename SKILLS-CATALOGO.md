@@ -170,6 +170,12 @@ Cada uma define um sistema completo (cores, formas, tipografia, atmosfera). Esco
 | `framed-grid-layout` | Grade minimalista com linhas finas e colchetes de canto. |
 | `nested-container-frames` | Contêiner dentro de contêiner com molduras visíveis. |
 
+## Bloco G. Home Assistant (skill escrita localmente)
+
+| Skill | Particularidade |
+|---|---|
+| `prism-dashboard:prism-dashboard` | Dashboards Home Assistant (YAML Lovelace) com os cards `custom:prism-*` do repo BangerTech/Prism-Dashboard: termostato, luz, persiana, aspirador, mídia, calendário, energia solar, impressoras 3D (Bambu, Creality, Klipper), sidebar e navegação. Não serve para web/React. Pede HACS com Mushroom, card-mod, layout-card, kiosk-mode, mini-graph-card, browser_mod. Tem `references/cards.md` com as chaves de cada card. Skill escrita por mim a partir do README, não vem pronta no repo. |
+
 ## Não instaladas
 
 `better-writing`, `explain-interface`, `state-machine`, `teardown`, `variant`, `break` (repo `jakubkrehel/skills`) estão no cache do plugin `better-design`, mas fora da lista `skills` do plugin. Se aparecerem registradas, trate como não pertencentes ao pacote.
