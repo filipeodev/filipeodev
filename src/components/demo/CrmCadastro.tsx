@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import type { Row } from "@/data/crmDemo";
+import { maskPhone, phoneDigits } from "@/lib/masks";
 import { btnDanger, btnGhost, btnPrimary, ConfirmDelete, inputCls, Modal } from "./Modal";
 
 type Field = { key: string; label: string; type?: string };
@@ -33,6 +34,10 @@ function RowForm({
           setError("Preencha todos os campos.");
           return;
         }
+        if (fields.some((f) => f.type === "tel" && phoneDigits(form[f.key]) < 10)) {
+          setError("Informe o telefone com DDD.");
+          return;
+        }
         onSubmit(form);
       }}
     >
@@ -45,8 +50,11 @@ function RowForm({
             <input
               id={`${uid}-${f.key}`}
               value={form[f.key] ?? ""}
-              onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+              onChange={(e) => setForm({ ...form, [f.key]: f.type === "tel" ? maskPhone(e.target.value) : e.target.value })}
               type={f.type ?? "text"}
+              inputMode={f.type === "tel" ? "tel" : undefined}
+              autoComplete={f.type === "tel" ? "off" : undefined}
+              placeholder={f.type === "tel" ? "(11) 90000-0000" : undefined}
               className={inputCls}
             />
           </div>

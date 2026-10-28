@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { brl, categories, history, type Tx } from "@/data/crmDemo";
+import { currencyFromNumber, maskCurrency, parseCurrency } from "@/lib/masks";
 import { BarChart, Donut } from "./Charts";
 import { btnDanger, btnGhost, btnPrimary, ConfirmDelete, inputCls, Modal } from "./Modal";
 
@@ -32,7 +33,7 @@ function TxForm({
   const [tipo, setTipo] = useState<Tx["tipo"]>(initial?.tipo ?? "despesa");
   const [desc, setDesc] = useState(initial?.desc ?? "");
   const [categoria, setCategoria] = useState<string>(initial?.tipo === "despesa" ? initial.categoria : categories[0]);
-  const [valor, setValor] = useState(initial ? String(initial.valor).replace(".", ",") : "");
+  const [valor, setValor] = useState(initial ? currencyFromNumber(initial.valor) : "");
   const [error, setError] = useState("");
 
   return (
@@ -40,7 +41,7 @@ function TxForm({
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        const v = Number(valor.replace(",", "."));
+        const v = parseCurrency(valor);
         if (!desc.trim() || !(v > 0)) {
           setError("Informe a descrição e um valor maior que zero.");
           return;
@@ -70,7 +71,7 @@ function TxForm({
         </div>
         <div>
           <label htmlFor="f-valor" className="mb-1 block text-sm text-muted">Valor em reais</label>
-          <input id="f-valor" inputMode="decimal" value={valor} onChange={(e) => setValor(e.target.value)} className={inputCls} />
+          <input id="f-valor" inputMode="numeric" placeholder="R$ 0,00" value={valor} onChange={(e) => setValor(maskCurrency(e.target.value))} className={inputCls} />
         </div>
       </div>
       {error && <p role="alert" className="mt-3 text-sm text-red-400">{error}</p>}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { brl, stages, type Lead } from "@/data/crmDemo";
+import { currencyFromNumber, maskCurrency, parseCurrency } from "@/lib/masks";
 import { btnDanger, btnGhost, btnPrimary, ConfirmDelete, inputCls, Modal } from "./Modal";
 
 export type LeadInput = { name: string; company: string; value: number; stage: number };
@@ -20,7 +21,7 @@ function LeadForm({
 }) {
   const [name, setName] = useState(initial?.name ?? "");
   const [company, setCompany] = useState(initial?.company ?? "");
-  const [value, setValue] = useState(initial ? String(initial.value) : "");
+  const [value, setValue] = useState(initial ? currencyFromNumber(initial.value) : "");
   const [stage, setStage] = useState(initial?.stage ?? 0);
   const [error, setError] = useState("");
 
@@ -29,7 +30,7 @@ function LeadForm({
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        const v = Number(value.replace(",", "."));
+        const v = parseCurrency(value);
         if (!name.trim() || !company.trim() || !(v > 0)) {
           setError("Informe nome, empresa e um valor maior que zero.");
           return;
@@ -48,7 +49,7 @@ function LeadForm({
         </div>
         <div>
           <label htmlFor="l-v" className="mb-1 block text-sm text-muted">Valor do negócio em reais</label>
-          <input id="l-v" inputMode="decimal" value={value} onChange={(e) => setValue(e.target.value)} className={inputCls} />
+          <input id="l-v" inputMode="numeric" placeholder="R$ 0,00" value={value} onChange={(e) => setValue(maskCurrency(e.target.value))} className={inputCls} />
         </div>
         <div>
           <label htmlFor="l-s" className="mb-1 block text-sm text-muted">Etapa</label>

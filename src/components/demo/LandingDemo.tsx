@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { maskPhone } from "@/lib/masks";
 import { Reveal } from "../Reveal";
 import { BeforeAfter, CountUp, HeroArt, TreatmentArt } from "./LandingParts";
 
@@ -246,7 +247,7 @@ export function LandingDemo() {
             </div>
             <div>
               <label htmlFor="l-phone" className="mb-1 block text-sm text-[var(--c-mute)]">WhatsApp com DDD</label>
-              <input id="l-phone" name="phone" type="tel" autoComplete="tel" aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "l-phone-e" : undefined} className={inputCls} />
+              <input id="l-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" placeholder="(11) 90000-0000" onChange={(e) => { e.target.value = maskPhone(e.target.value); }}aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "l-phone-e" : undefined} className={inputCls} />
               {errors.phone && <p id="l-phone-e" className="mt-1 text-sm text-red-700">{errors.phone}</p>}
             </div>
             <button type="submit" className="min-h-11 w-full rounded-xl bg-[var(--c-rose)] px-4 py-2 text-base font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-rose)] motion-reduce:transition-none">
