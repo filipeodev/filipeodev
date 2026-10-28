@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 
 type Msg = { from: "bot" | "me"; text: string };
-type Step = { options: string[]; reply: (choice: string) => string; next?: number };
+type Step = { ask: string; options: string[]; reply: (choice: string) => string };
 
 const flow: Step[] = [
-  { options: ["Limpeza de pele", "Massagem", "Depilação"], reply: (c) => `Ótima escolha: ${c}. Para qual dia você prefere?` },
-  { options: ["Amanhã", "Sexta", "Sábado"], reply: (c) => `Tenho horários ${c.toLowerCase()} às 10h e às 15h. Qual você quer?` },
-  { options: ["10h", "15h"], reply: (c) => `Pronto, reservei às ${c}. Você recebe um lembrete antes do horário.` },
-  { options: ["Falar com uma pessoa", "Está ótimo, obrigado"], reply: (c) =>
+  { ask: "O que você quer agendar?", options: ["Limpeza de pele", "Massagem", "Depilação"], reply: (c) => `Ótima escolha: ${c}. Para qual dia você prefere?` },
+  { ask: "Para qual dia você prefere?", options: ["Amanhã", "Sexta", "Sábado"], reply: (c) => `Tenho horários ${c.toLowerCase()} às 10h e às 15h. Qual você quer?` },
+  { ask: "Qual horário você prefere, 10h ou 15h?", options: ["10h", "15h"], reply: (c) => `Pronto, reservei às ${c}. Você recebe um lembrete antes do horário.` },
+  { ask: "Posso ajudar em mais alguma coisa?", options: ["Falar com uma pessoa", "Está ótimo, obrigado"], reply: (c) =>
       c === "Falar com uma pessoa"
         ? "Certo, estou passando a conversa para a Marina. Ela responde em instantes."
         : "Por nada! Até logo." },
@@ -38,12 +38,17 @@ export function ChatDemo() {
     }, 700);
   };
 
-  // desfaz a última escolha, inclusive se a resposta do bot ainda está "digitando"
+  // a pessoa avisa que errou, e o bot repete a pergunta anterior.
+  // Se a resposta ainda está "digitando", ela é cancelada e o passo atual se repete.
   const back = () => {
     clearTimeout(timer.current);
-    const keepSteps = typing ? step : step - 1;
-    setMsgs((m) => m.slice(0, 1 + 2 * keepSteps));
-    setStep(keepSteps);
+    const target = typing ? step : step - 1;
+    setMsgs((m) => [
+      ...m,
+      { from: "me", text: "Errei a opção, quero escolher novamente." },
+      { from: "bot", text: `Sem problema! ${flow[target].ask}` },
+    ]);
+    setStep(target);
     setTyping(false);
   };
 
