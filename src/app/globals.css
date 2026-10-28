@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #000000;
+  --bg-surface: #181818;
+  --bg-raised: #1f1f1f;
+  --border-subtle: #313131;
+  --text-primary: #ededed;
+  --text-secondary: #a3a3a3;
+  --accent-solid: #34d399;
+  --accent-solid-hover: #6ee7b7;
+  --accent-on-solid: #022c22;
+}
+
+@theme inline {
+  --color-base: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-raised: var(--bg-raised);
+  --color-line: var(--border-subtle);
+  --color-fg: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-accent: var(--accent-solid);
+  --color-accent-hover: var(--accent-solid-hover);
+  --color-on-accent: var(--accent-on-solid);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-block-start: 96px;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--accent-solid);
+  color: var(--accent-on-solid);
+}
+
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
+.hero-title {
+  background: linear-gradient(to right, #ffffff, #9b9b9b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 700ms var(--ease-out-soft), transform 700ms var(--ease-out-soft);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { transform: none; transition: opacity 300ms linear; }
+}
