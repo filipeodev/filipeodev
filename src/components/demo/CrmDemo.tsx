@@ -13,7 +13,7 @@ import {
 } from "@/data/crmDemo";
 import { CrmCadastro } from "./CrmCadastro";
 import { CrmFinanceiro } from "./CrmFinanceiro";
-import { CrmFunil } from "./CrmFunil";
+import { CrmFunil, type LeadInput } from "./CrmFunil";
 import { CrmVisao } from "./CrmVisao";
 
 const menu = [
@@ -39,6 +39,15 @@ export function CrmDemo() {
         l.id === id && l.stage !== stage ? { ...l, stage, history: [...l.history, `Movido para "${stages[stage]}"`] } : l,
       ),
     );
+
+  const addLead = (l: LeadInput) =>
+    setLeads((ls) => [...ls, { ...l, id: Math.max(0, ...ls.map((x) => x.id)) + 1, history: ["Cadastrado manualmente"] }]);
+  const editLead = (id: number, l: LeadInput) =>
+    setLeads((ls) =>
+      ls.map((x) => (x.id === id ? { ...x, ...l, history: [...x.history, "Dados atualizados"] } : x)),
+    );
+  const deleteLead = (id: number) => setLeads((ls) => ls.filter((x) => x.id !== id));
+  const nextTxId = () => Math.max(0, ...tx.map((x) => x.id)) + 1;
 
   const current = menu.find((m) => m.id === tab)!;
 
@@ -68,7 +77,9 @@ export function CrmDemo() {
           {current.label}
         </h2>
         {tab === "visao" && <CrmVisao leads={leads} tx={tx} />}
-        {tab === "funil" && <CrmFunil leads={leads} onMove={move} />}
+        {tab === "funil" && (
+          <CrmFunil leads={leads} onMove={move} onAdd={addLead} onEdit={editLead} onDelete={deleteLead} />
+        )}
         {tab === "clientes" && (
           <CrmCadastro
             title="Clientes cadastrados"
@@ -81,6 +92,8 @@ export function CrmDemo() {
             ]}
             rows={clientes}
             onAdd={(r) => setClientes((c) => [...c, r])}
+            onEdit={(i, r) => setClientes((c) => c.map((x, j) => (j === i ? r : x)))}
+            onDelete={(i) => setClientes((c) => c.filter((_, j) => j !== i))}
           />
         )}
         {tab === "fornecedores" && (
@@ -95,10 +108,17 @@ export function CrmDemo() {
             ]}
             rows={fornecedores}
             onAdd={(r) => setFornecedores((f) => [...f, r])}
+            onEdit={(i, r) => setFornecedores((f) => f.map((x, j) => (j === i ? r : x)))}
+            onDelete={(i) => setFornecedores((f) => f.filter((_, j) => j !== i))}
           />
         )}
         {tab === "financeiro" && (
-          <CrmFinanceiro tx={tx} onAdd={(t) => setTx((x) => [...x, { ...t, id: x.length + 1 }])} />
+          <CrmFinanceiro
+            tx={tx}
+            onAdd={(t) => setTx((x) => [...x, { ...t, id: nextTxId() }])}
+            onEdit={(id, t) => setTx((x) => x.map((y) => (y.id === id ? { ...t, id } : y)))}
+            onDelete={(id) => setTx((x) => x.filter((y) => y.id !== id))}
+          />
         )}
       </section>
     </div>
